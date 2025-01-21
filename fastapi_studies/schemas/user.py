@@ -1,9 +1,6 @@
-from pydantic import BaseModel, EmailStr
 from typing import List
 
-
-class Message(BaseModel):
-    message: str
+from pydantic import BaseModel, EmailStr
 
 
 class UserSchema(BaseModel):
