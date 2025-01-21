@@ -21,7 +21,7 @@ def get_user(id: int):
 
 @app.put("/users/{id}/", response_model=UserPublic)
 def update_user(id: int, body: UserSchema):
-    ...
+    return body
 
 @app.delete("/users/{id}/", response_model=Message)
 def delete_user(id: int):
