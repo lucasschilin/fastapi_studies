@@ -35,5 +35,5 @@ quote-style = 'single'
 lint = 'ruff check'
 pre_format = 'ruff check --fix'
 format = 'ruff format'
-run = 'fastapi dev fast_zero/app.py'
+run = 'fastapi dev fastapi_studies/app.py'
 
