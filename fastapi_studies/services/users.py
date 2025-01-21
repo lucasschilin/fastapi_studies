@@ -1,46 +1,55 @@
 from http import HTTPStatus
 
 from fastapi import HTTPException
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session
 
+from fastapi_studies.models.user import User
 from fastapi_studies.schemas.user import UserDB, UserSchema
+from fastapi_studies.settings import Settings
 
 database = {}
 database_ids = []
 
 
-def controller_create_user(user: UserSchema):
-    for id, dados in database.items():
-        if dados.username == user.username:
-            raise HTTPException(
-                status_code=HTTPStatus.CONFLICT,
-                detail='Nome de usuário não disponível.',
+def service_create_user(user: UserSchema):
+    engine = create_engine(Settings().DATABASE_URL)
+
+    with Session(engine) as session:
+        user_db = session.scalar(
+            select(User).where(
+                ((User.username == user.username) | (User.email == user.email))
+                & (User.deleted_at == None)
             )
-        elif dados.email == user.email:
-            raise HTTPException(
-                status_code=HTTPStatus.CONFLICT,
-                detail='Endereço de e-mail não disponível.',
-            )
+        )
 
-    user_with_id = UserDB(
-        id=(1 if len(database_ids) == 0 else database_ids[-1] + 1),
-        **user.model_dump(),
-    )
+        if user_db:
+            if user.username == user_db.username:
+                raise HTTPException(
+                    status_code=HTTPStatus.CONFLICT,
+                    detail='Usuário não disponível.',
+                )
+            elif user.email == user_db.email:
+                raise HTTPException(
+                    status_code=HTTPStatus.CONFLICT,
+                    detail='Endereço de e-mail não disponível.',
+                )
 
-    database[user_with_id.id] = user_with_id
-    database_ids.append(user_with_id.id)
+        user_db = User(
+            username=user.username, email=user.email, password=user.password
+        )
 
-    return user_with_id
+        session.add(user_db)
+        session.commit()
+        session.refresh(user_db)
 
-
-def controller_get_users():
-    users = []
-    for id, dados in database.items():
-        users.append(dados)
-
-    return {'users': users}
+    return user_db
 
 
-def controller_get_user(id: int):
+def service_get_users(): ...
+
+
+def service_get_user(id: int):
     if id not in database:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
@@ -50,7 +59,7 @@ def controller_get_user(id: int):
     return database[id]
 
 
-def controller_update_user(id: int, user: UserSchema):
+def service_update_user(id: int, user: UserSchema):
     if id not in database:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
@@ -66,7 +75,7 @@ def controller_update_user(id: int, user: UserSchema):
     return user_with_id
 
 
-def controller_delete_user(id: int):
+def service_delete_user(id: int):
     if id not in database:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
