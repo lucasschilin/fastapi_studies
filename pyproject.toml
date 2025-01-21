@@ -1,0 +1,39 @@
+[project]
+name = "fastapi-studies"
+version = "0.1.0"
+description = "Projeto de estudo para aprender a respeito do framework FastAPI."
+authors = [
+    {name = "Lucas Schlindwein",email = "schilin.lucas@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13.1,<3.14.0"
+dependencies = [
+    "fastapi[standard] (>=0.115.7,<0.116.0)"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+taskipy = "^1.14.1"
+ruff = "^0.9.3"
+
+[tool.ruff]
+line-length = 79
+extend-exclude = ['migrations']
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT']
+
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
+
+[tool.taskipy.tasks]
+lint = 'ruff check'
+pre_format = 'ruff check --fix'
+format = 'ruff format'
+run = 'fastapi dev fast_zero/app.py'
+
