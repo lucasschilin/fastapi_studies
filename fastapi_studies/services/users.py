@@ -46,17 +46,25 @@ def service_create_user(user: UserSchema):
     return user_db
 
 
-def service_get_users(): ...
+def service_get_users():
+    return {'users': []}
 
 
 def service_get_user(id: int):
-    if id not in database:
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
-            detail='Usuário não encontrado.',
+    engine = create_engine(Settings().DATABASE_URL)
+
+    with Session(engine) as session:
+        user_db = session.scalar(
+            select(User).where((User.id == id) & (User.deleted_at == None))
         )
 
-    return database[id]
+        if not user_db:
+            raise HTTPException(
+                status_code=HTTPStatus.NOT_FOUND,
+                detail='Usuário não encontrado.',
+            )
+
+    return user_db
 
 
 def service_update_user(id: int, user: UserSchema):

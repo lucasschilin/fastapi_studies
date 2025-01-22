@@ -25,10 +25,10 @@ def create_user(user: UserSchema):
 
 @app.get('/users/', status_code=HTTPStatus.OK, response_model=UserList)
 def get_users():
-    return service_get_users()
-    # try:
-    # except ValueError as e:
-    #     raise HTTPException(status_code=400, detail=str(e))
+    try:
+        return service_get_users()
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.get('/users/{id}/', status_code=HTTPStatus.OK, response_model=UserPublic)
