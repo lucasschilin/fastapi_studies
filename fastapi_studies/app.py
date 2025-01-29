@@ -1,8 +1,14 @@
 from http import HTTPStatus
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
-from fastapi_studies.schemas import Message, UserPublic, UserSchema, UserDB
+from fastapi_studies.schemas import (
+    Message,
+    UserPublic,
+    UserSchema,
+    UserDB,
+    UserList,
+)
 
 app = FastAPI()
 
@@ -12,11 +18,17 @@ database_ids = []
 
 @app.post('/users/', status_code=HTTPStatus.CREATED, response_model=UserPublic)
 def create_user(user: UserSchema):
-    # for id, dados in database.items():
-    #     if dados.username == user.username:
-    #         return 'oop'
-    #     elif dados.email == user.email:
-    #         return 'oop'
+    for id, dados in database.items():
+        if dados.username == user.username:
+            raise HTTPException(
+                status_code=HTTPStatus.CONFLICT,
+                detail='Nome de usuário não disponível.',
+            )
+        elif dados.email == user.email:
+            raise HTTPException(
+                status_code=HTTPStatus.CONFLICT,
+                detail='Endereço de e-mail não disponível.',
+            )
 
     user_with_id = UserDB(
         id=(1 if len(database_ids) == 0 else database_ids[-1] + 1),
@@ -29,8 +41,13 @@ def create_user(user: UserSchema):
     return user_with_id
 
 
-@app.get('/users/', status_code=HTTPStatus.OK)
-def get_users(): ...
+@app.get('/users/', status_code=HTTPStatus.OK, response_model=UserList)
+def get_users():
+    users = []
+    for id, dados in database.items():
+        users.append(dados)
+
+    return {'users': users}
 
 
 @app.get('/users/{id}/', status_code=HTTPStatus.OK, response_model=UserPublic)
