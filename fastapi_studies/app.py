@@ -63,9 +63,29 @@ def get_user(id: int):
 
 @app.put('/users/{id}/', status_code=HTTPStatus.OK, response_model=UserPublic)
 def update_user(id: int, user: UserSchema):
-    return user
+    if id not in database:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail='Usuário não encontrado.',
+        )
+
+    user_with_id = UserDB(
+        id=id,
+        **user.model_dump(),
+    )
+    database[id] = user_with_id
+
+    return user_with_id
 
 
-@app.delete('/users/{id}/', response_model=Message)
+@app.delete('/users/{id}/', status_code=HTTPStatus.OK, response_model=Message)
 def delete_user(id: int):
-    return {'message': 'User deleted'}
+    if id not in database:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail='Usuário não encontrado.',
+        )
+
+    database.pop(id, None)
+
+    return {'message': 'Usuário deletado.'}
