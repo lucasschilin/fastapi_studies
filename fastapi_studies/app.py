@@ -51,7 +51,14 @@ def get_users():
 
 
 @app.get('/users/{id}/', status_code=HTTPStatus.OK, response_model=UserPublic)
-def get_user(id: int): ...
+def get_user(id: int):
+    if id not in database:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail='Usuário não encontrado.',
+        )
+
+    return database[id]
 
 
 @app.put('/users/{id}/', status_code=HTTPStatus.OK, response_model=UserPublic)
