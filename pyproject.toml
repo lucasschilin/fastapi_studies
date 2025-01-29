@@ -36,4 +36,4 @@ lint = 'ruff check'
 pre_format = 'ruff check --fix'
 format = 'ruff format'
 run = 'fastapi dev fastapi_studies/app.py'
-
+add = 'ruff format && git add'
