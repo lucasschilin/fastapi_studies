@@ -1,5 +1,3 @@
-from typing import List
-
 from pydantic import BaseModel, EmailStr
 
 
@@ -24,9 +22,5 @@ class GetUserSchema(BaseModel):
     email: EmailStr
 
 
-class GetUserPasswordSchema(BaseModel):
-    password: str
-
-
 class GetUsersSchema(BaseModel):
-    users: List[GetUserSchema]
+    users: list[GetUserSchema]

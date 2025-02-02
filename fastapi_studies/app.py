@@ -7,7 +7,6 @@ from fastapi_studies.database import get_session
 from fastapi_studies.schemas.message import MessageSchema
 from fastapi_studies.schemas.user import (
     CreateUserSchema,
-    GetUserPasswordSchema,
     GetUserSchema,
     GetUsersSchema,
     UpdateUserPasswordSchema,
@@ -17,7 +16,6 @@ from fastapi_studies.services.users import (
     service_create_user,
     service_delete_user,
     service_get_user,
-    service_get_user_password,
     service_get_users,
     service_update_user,
     service_update_user_password,
@@ -63,19 +61,10 @@ def delete_user(id: int, session: Session = Depends(get_session)):
     return service_delete_user(id, session)
 
 
-@app.get(
-    '/users/{id}/password/',
-    status_code=HTTPStatus.OK,
-    response_model=GetUserPasswordSchema,
-)
-def get_user_password(id: int, session: Session = Depends(get_session)):
-    return service_get_user_password(id, session)
-
-
 @app.patch(
     '/users/{id}/password/',
     status_code=HTTPStatus.OK,
-    response_model=GetUserPasswordSchema,
+    response_model=MessageSchema,
 )
 def update_user_password(
     id: int,

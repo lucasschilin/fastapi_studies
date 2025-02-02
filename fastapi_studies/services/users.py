@@ -121,20 +121,6 @@ def service_delete_user(id: int, session: Session):
     return {'message': 'Usuário deletado.'}
 
 
-def service_get_user_password(id: int, session: Session):
-    user = session.scalar(
-        select(User).where((User.id == id) & (User.deleted_at == None))
-    )
-
-    if not user:
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
-            detail='Usuário não encontrado.',
-        )
-
-    return {'password': user.password}
-
-
 def service_update_user_password(
     id: int, body: UpdateUserPasswordSchema, session: Session
 ):
@@ -159,4 +145,4 @@ def service_update_user_password(
     session.commit()
     session.refresh(user)
 
-    return {'password': user.password}
+    return {'message': 'Senha alterada.'}
