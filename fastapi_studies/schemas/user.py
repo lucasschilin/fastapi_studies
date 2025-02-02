@@ -3,21 +3,30 @@ from typing import List
 from pydantic import BaseModel, EmailStr
 
 
-class UserSchema(BaseModel):
+class CreateUserSchema(BaseModel):
     username: str
     email: EmailStr
     password: str
 
 
-class UserDB(UserSchema):
-    id: int
+class UpdateUserSchema(BaseModel):
+    username: str
+    email: EmailStr
 
 
-class UserPublic(BaseModel):
+class UpdateUserPasswordSchema(BaseModel):
+    password: str
+
+
+class GetUserSchema(BaseModel):
     id: int
     username: str
     email: EmailStr
 
 
-class UserList(BaseModel):
-    users: List[UserPublic]
+class GetUserPasswordSchema(BaseModel):
+    password: str
+
+
+class GetUsersSchema(BaseModel):
+    users: List[GetUserSchema]
