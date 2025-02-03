@@ -7,15 +7,6 @@ class CreateUserSchema(BaseModel):
     password: str
 
 
-class UpdateUserSchema(BaseModel):
-    username: str
-    email: EmailStr
-
-
-class UpdateUserPasswordSchema(BaseModel):
-    password: str
-
-
 class GetUserSchema(BaseModel):
     id: int
     username: str

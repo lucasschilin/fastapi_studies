@@ -3,30 +3,44 @@ from http import HTTPStatus
 from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
 
+from fastapi_studies.controllers.profile_controller import (
+    controller_delete_profile,
+    controller_get_profile,
+    controller_update_profile,
+    controller_update_profile_password,
+)
+from fastapi_studies.controllers.users_controller import (
+    controller_create_user,
+    controller_get_user,
+    controller_get_users,
+)
 from fastapi_studies.database import get_session
 from fastapi_studies.schemas.message import MessageSchema
+from fastapi_studies.schemas.profile import (
+    GetProfileSchema,
+    UpdateProfilePasswordSchema,
+    UpdateProfileSchema,
+)
 from fastapi_studies.schemas.user import (
     CreateUserSchema,
     GetUserSchema,
     GetUsersSchema,
-    UpdateUserPasswordSchema,
-    UpdateUserSchema,
-)
-from fastapi_studies.services.users import (
-    service_create_user,
-    service_delete_user,
-    service_get_user,
-    service_get_users,
-    service_update_user,
-    service_update_user_password,
 )
 
 app = FastAPI()
 
 
+# /users/ ENDPOINTS
 @app.get('/users/', status_code=HTTPStatus.OK, response_model=GetUsersSchema)
 def get_users(session: Session = Depends(get_session)):
-    return service_get_users(session)
+    return controller_get_users(session)
+
+
+@app.get(
+    '/users/{id}/', status_code=HTTPStatus.OK, response_model=GetUserSchema
+)
+def get_user(id: int, session: Session = Depends(get_session)):
+    return controller_get_user(id, session)
 
 
 @app.post(
@@ -35,40 +49,40 @@ def get_users(session: Session = Depends(get_session)):
 def create_user(
     body: CreateUserSchema, session: Session = Depends(get_session)
 ):
-    return service_create_user(body, session)
+    return controller_create_user(body, session)
 
 
+# /profile/ ENDPOINTS
 @app.get(
-    '/users/{id}/', status_code=HTTPStatus.OK, response_model=GetUserSchema
+    '/profile/', status_code=HTTPStatus.OK, response_model=GetProfileSchema
 )
-def get_user(id: int, session: Session = Depends(get_session)):
-    return service_get_user(id, session)
+def get_profile(session: Session = Depends(get_session)):
+    return controller_get_profile(session)
 
 
 @app.put(
-    '/users/{id}/', status_code=HTTPStatus.OK, response_model=GetUserSchema
+    '/profile/', status_code=HTTPStatus.OK, response_model=GetProfileSchema
 )
-def update_user(
-    id: int, body: UpdateUserSchema, session: Session = Depends(get_session)
+def update_profile(
+    body: UpdateProfileSchema, session: Session = Depends(get_session)
 ):
-    return service_update_user(id, body, session)
-
-
-@app.delete(
-    '/users/{id}/', status_code=HTTPStatus.OK, response_model=MessageSchema
-)
-def delete_user(id: int, session: Session = Depends(get_session)):
-    return service_delete_user(id, session)
+    return controller_update_profile(body, session)
 
 
 @app.patch(
-    '/users/{id}/password/',
+    '/profile/password/',
     status_code=HTTPStatus.OK,
     response_model=MessageSchema,
 )
-def update_user_password(
-    id: int,
-    body: UpdateUserPasswordSchema,
+def update_profile_password(
+    body: UpdateProfilePasswordSchema,
     session: Session = Depends(get_session),
 ):
-    return service_update_user_password(id, body, session)
+    return controller_update_profile_password(body, session)
+
+
+@app.delete(
+    '/profile/', status_code=HTTPStatus.OK, response_model=MessageSchema
+)
+def delete_profile(session: Session = Depends(get_session)):
+    return controller_delete_profile(id, session)
