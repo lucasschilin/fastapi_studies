@@ -3,11 +3,11 @@ from http import HTTPStatus
 from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
 
-from fastapi_studies.controllers.profile_controller import (
-    controller_delete_profile,
-    controller_get_profile,
-    controller_update_profile,
-    controller_update_profile_password,
+from fastapi_studies.controllers.me import (
+    controller_delete_me,
+    controller_get_me,
+    controller_update_me,
+    controller_update_me_password,
 )
 from fastapi_studies.controllers.users_controller import (
     controller_create_user,
@@ -15,12 +15,12 @@ from fastapi_studies.controllers.users_controller import (
     controller_get_users,
 )
 from fastapi_studies.database import get_session
-from fastapi_studies.schemas.message import MessageSchema
-from fastapi_studies.schemas.profile import (
-    GetProfileSchema,
-    UpdateProfilePasswordSchema,
-    UpdateProfileSchema,
+from fastapi_studies.schemas.me import (
+    GetMeSchema,
+    UpdateMePasswordSchema,
+    UpdateMeSchema,
 )
+from fastapi_studies.schemas.message import MessageSchema
 from fastapi_studies.schemas.user import (
     CreateUserSchema,
     GetUserSchema,
@@ -52,37 +52,29 @@ def create_user(
     return controller_create_user(body, session)
 
 
-# /profile/ ENDPOINTS
-@app.get(
-    '/profile/', status_code=HTTPStatus.OK, response_model=GetProfileSchema
-)
-def get_profile(session: Session = Depends(get_session)):
-    return controller_get_profile(session)
+# /me/ ENDPOINTS
+@app.get('/me/', status_code=HTTPStatus.OK, response_model=GetMeSchema)
+def get_me(session: Session = Depends(get_session)):
+    return controller_get_me(session)
 
 
-@app.put(
-    '/profile/', status_code=HTTPStatus.OK, response_model=GetProfileSchema
-)
-def update_profile(
-    body: UpdateProfileSchema, session: Session = Depends(get_session)
-):
-    return controller_update_profile(body, session)
+@app.put('/me/', status_code=HTTPStatus.OK, response_model=GetMeSchema)
+def update_me(body: UpdateMeSchema, session: Session = Depends(get_session)):
+    return controller_update_me(body, session)
 
 
 @app.patch(
-    '/profile/password/',
+    '/me/password/',
     status_code=HTTPStatus.OK,
     response_model=MessageSchema,
 )
-def update_profile_password(
-    body: UpdateProfilePasswordSchema,
+def update_me_password(
+    body: UpdateMePasswordSchema,
     session: Session = Depends(get_session),
 ):
-    return controller_update_profile_password(body, session)
+    return controller_update_me_password(body, session)
 
 
-@app.delete(
-    '/profile/', status_code=HTTPStatus.OK, response_model=MessageSchema
-)
-def delete_profile(session: Session = Depends(get_session)):
-    return controller_delete_profile(id, session)
+@app.delete('/me/', status_code=HTTPStatus.OK, response_model=MessageSchema)
+def delete_me(session: Session = Depends(get_session)):
+    return controller_delete_me(id, session)

@@ -5,14 +5,15 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from fastapi_studies.models.user import User
-from fastapi_studies.schemas.profile import (
-    UpdateProfilePasswordSchema,
-    UpdateProfileSchema,
+from fastapi_studies.schemas.me import (
+    UpdateMePasswordSchema,
+    UpdateMeSchema,
 )
 
 
-def controller_get_profile(session: Session):
-    """Função para buscar o perfil do usuário"""
+def controller_get_me(session: Session):
+    """Função para buscar a conta do usuário logado
+    chamado pela rota GET /me/."""
     user = session.scalar(
         select(User).where((User.id == '2') & (User.deleted_at == None))
     )
@@ -20,15 +21,15 @@ def controller_get_profile(session: Session):
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Perfil não encontrado.',
+            detail='Conta não encontrada.',
         )
 
     return user
 
 
-def controller_update_profile(body: UpdateProfileSchema, session: Session):
-    """Função para atualizar o perfil do usuário
-    chamada pela rota PUT /users/{id}/."""
+def controller_update_me(body: UpdateMeSchema, session: Session):
+    """Função para atualizar a conta do usuário
+    chamada pela rota PUT /me/."""
     user = session.scalar(
         select(User).where((User.id == '2') & (User.deleted_at == None))
     )
@@ -36,7 +37,7 @@ def controller_update_profile(body: UpdateProfileSchema, session: Session):
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Perfil não encontrado.',
+            detail='Conta não encontrada.',
         )
 
     other_user = session.scalar(
@@ -68,11 +69,11 @@ def controller_update_profile(body: UpdateProfileSchema, session: Session):
     return user
 
 
-def controller_update_profile_password(
-    body: UpdateProfilePasswordSchema, session: Session
+def controller_update_me_password(
+    body: UpdateMePasswordSchema, session: Session
 ):
     """Função para atualizar a senha do usuário
-    chamada pela rota PATCH /profile/password/."""
+    chamada pela rota PATCH /me/password/."""
     user = session.scalar(
         select(User).where((User.id == '2') & (User.deleted_at == None))
     )
@@ -80,7 +81,7 @@ def controller_update_profile_password(
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Perfil não encontrado.',
+            detail='Conta não encontrada.',
         )
 
     if user.password == body.password:
@@ -97,8 +98,9 @@ def controller_update_profile_password(
     return {'message': 'Senha alterada.'}
 
 
-def controller_delete_profile(id: int, session: Session):
-    """Função para deletar o perfil do usuário"""
+def controller_delete_me(id: int, session: Session):
+    """Função para deletar o perfil do usuário
+    chamada pela rota DELETE /me/."""
     user = session.scalar(
         select(User).where((User.id == '2') & (User.deleted_at == None))
     )
@@ -106,11 +108,11 @@ def controller_delete_profile(id: int, session: Session):
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Perfil não encontrado.',
+            detail='Conta não encontrada.',
         )
 
     user.deleted_at = func.now()
 
     session.commit()
 
-    return {'message': 'Perfil deletado.'}
+    return {'message': 'Conta excluida.'}
