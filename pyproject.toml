@@ -35,8 +35,8 @@ preview = true
 quote-style = 'single'
 
 [tool.taskipy.tasks]
-lint = 'ruff check'
-pre_format = 'ruff check --fix'
-format = 'ruff format'
-run = 'fastapi dev fastapi_studies/app.py'
-add = 'ruff format && git add'
+lint = "ruff check"
+pre_format = "ruff check --fix"
+format = "ruff format"
+run = "poetry run fastapi dev fastapi_studies/app.py"
+add = "ruff format && git add"
