@@ -8,6 +8,7 @@ from fastapi_studies.models.user import User
 from fastapi_studies.schemas.user import (
     CreateUserSchema,
 )
+from fastapi_studies.security import get_password_hash
 
 
 def controller_get_users(session: Session):
@@ -56,7 +57,9 @@ def controller_create_user(body: CreateUserSchema, session: Session):
             )
 
     user = User(
-        username=body.username, email=body.email, password=body.password
+        username=body.username,
+        email=body.email,
+        password=get_password_hash(body.password),
     )
 
     session.add(user)

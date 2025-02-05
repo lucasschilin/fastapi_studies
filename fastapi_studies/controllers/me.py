@@ -9,6 +9,7 @@ from fastapi_studies.schemas.me import (
     UpdateMePasswordSchema,
     UpdateMeSchema,
 )
+from fastapi_studies.security import get_password_hash
 
 
 def controller_get_me(session: Session):
@@ -84,7 +85,7 @@ def controller_update_me_password(
             detail='Account not found.',
         )
 
-    user.password = body.password
+    user.password = get_password_hash(body.password)
 
     session.commit()
     session.refresh(user)
