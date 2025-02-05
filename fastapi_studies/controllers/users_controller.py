@@ -28,7 +28,7 @@ def controller_get_user(id: int, session: Session):
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Usuário não encontrado.',
+            detail='User not found.',
         )
 
     return user
@@ -47,12 +47,12 @@ def controller_create_user(body: CreateUserSchema, session: Session):
         if body.username == user.username:
             raise HTTPException(
                 status_code=HTTPStatus.CONFLICT,
-                detail='Nome de usuário não disponível.',
+                detail='Username not available.',
             )
         elif body.email == user.email:
             raise HTTPException(
                 status_code=HTTPStatus.CONFLICT,
-                detail='Endereço de e-mail não disponível.',
+                detail='E-mail address not available.',
             )
 
     user = User(

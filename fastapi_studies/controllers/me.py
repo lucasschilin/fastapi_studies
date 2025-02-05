@@ -21,7 +21,7 @@ def controller_get_me(session: Session):
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Conta não encontrada.',
+            detail='Account not found.',
         )
 
     return user
@@ -37,7 +37,7 @@ def controller_update_me(body: UpdateMeSchema, session: Session):
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Conta não encontrada.',
+            detail='Account not found.',
         )
 
     other_user = session.scalar(
@@ -52,12 +52,12 @@ def controller_update_me(body: UpdateMeSchema, session: Session):
         if other_user.username == body.username:
             raise HTTPException(
                 status_code=HTTPStatus.CONFLICT,
-                detail='Nome de usuário não disponível.',
+                detail='Username not available.',
             )
         elif other_user.email == body.email:
             raise HTTPException(
                 status_code=HTTPStatus.CONFLICT,
-                detail='Endereço de e-mail não disponível.',
+                detail='E-mail address not available.',
             )
 
     user.username = body.username
@@ -81,13 +81,7 @@ def controller_update_me_password(
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Conta não encontrada.',
-        )
-
-    if user.password == body.password:
-        raise HTTPException(
-            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
-            detail='Senha igual a atual.',
+            detail='Account not found.',
         )
 
     user.password = body.password
@@ -95,7 +89,7 @@ def controller_update_me_password(
     session.commit()
     session.refresh(user)
 
-    return {'message': 'Senha alterada.'}
+    return {'message': 'Password changed.'}
 
 
 def controller_delete_me(id: int, session: Session):
@@ -108,11 +102,11 @@ def controller_delete_me(id: int, session: Session):
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Conta não encontrada.',
+            detail='Account not found.',
         )
 
     user.deleted_at = func.now()
 
     session.commit()
 
-    return {'message': 'Conta excluida.'}
+    return {'message': 'Account deleted.'}
