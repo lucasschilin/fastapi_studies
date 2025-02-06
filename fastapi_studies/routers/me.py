@@ -3,7 +3,7 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from fastapi_studies.controllers.me import (
+from fastapi_studies.controllers.me_controller import (
     controller_delete_me,
     controller_get_me,
     controller_update_me,
