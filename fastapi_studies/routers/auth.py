@@ -6,6 +6,7 @@ from fastapi_studies.controllers.auth_controller import (
     controller_create_auth_token,
 )
 from fastapi_studies.database import get_session
+from fastapi_studies.schemas.token import TokenSchema
 
 router = APIRouter(
     prefix='/auth',
@@ -13,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.post('/token/')
+@router.post('/token/', response_model=TokenSchema)
 def create_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(get_session),
