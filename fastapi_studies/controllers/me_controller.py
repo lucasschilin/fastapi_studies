@@ -93,7 +93,7 @@ def controller_update_me_password(
     return {'message': 'Password changed.'}
 
 
-def controller_delete_me(id: int, session: Session):
+def controller_delete_me(session: Session):
     """Função para deletar o perfil do usuário
     chamada pela rota DELETE /me/."""
     user = session.scalar(

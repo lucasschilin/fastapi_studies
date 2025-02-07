@@ -8,7 +8,13 @@ from fastapi_studies.schemas.message import MessageSchema
 
 app = FastAPI()
 
-app.add_middleware(CORSMiddleware, allow_origins=['*'])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 app.include_router(me.router)
 app.include_router(users.router)

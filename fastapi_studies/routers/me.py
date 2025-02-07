@@ -47,4 +47,4 @@ def update_me_password(
 
 @router.delete('/', status_code=HTTPStatus.OK, response_model=MessageSchema)
 def delete_me(session: Session = Depends(get_session)):
-    return controller_delete_me(id, session)
+    return controller_delete_me(session)

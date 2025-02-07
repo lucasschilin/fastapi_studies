@@ -15,3 +15,7 @@ class GetUserSchema(BaseModel):
 
 class GetUsersSchema(BaseModel):
     users: list[GetUserSchema]
+
+
+class UpdateUserPasswordSchema(BaseModel):
+    password: str
