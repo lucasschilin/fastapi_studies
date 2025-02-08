@@ -14,7 +14,9 @@ class User:
     username: Mapped[str] = mapped_column(unique=True)
     email: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str]
+    created_by: Mapped[int] = mapped_column(init=False)
     created_at: Mapped[datetime] = mapped_column(
         init=False, server_default=func.now()
     )
+    deleted_by: Mapped[int] = mapped_column(init=False)
     deleted_at: Mapped[datetime] = mapped_column(init=False)

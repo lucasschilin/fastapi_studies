@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from fastapi_studies.models.user import User
-from fastapi_studies.security import verify_password
+from fastapi_studies.security import create_access_token, verify_password
 
 
 def controller_create_auth_token(
@@ -23,3 +23,7 @@ def controller_create_auth_token(
             status_code=HTTPStatus.UNAUTHORIZED,
             detail='Incorrect username or password.',
         )
+
+    access_token = create_access_token(data={'sub': user.username})
+
+    return {'access_token': access_token, 'token_type': 'Bearer'}

@@ -12,11 +12,13 @@ from fastapi_studies.schemas.me import (
 from fastapi_studies.security import get_password_hash
 
 
-def controller_get_me(session: Session):
+def controller_get_me(session: Session, current_user: User):
     """Função para buscar a conta do usuário logado
     chamado pela rota GET /me/."""
     user = session.scalar(
-        select(User).where((User.id == '2') & (User.deleted_at == None))
+        select(User).where(
+            (User.id == current_user.id) & (User.deleted_at == None)
+        )
     )
 
     if not user:
@@ -28,11 +30,15 @@ def controller_get_me(session: Session):
     return user
 
 
-def controller_update_me(body: UpdateMeSchema, session: Session):
+def controller_update_me(
+    body: UpdateMeSchema, session: Session, current_user: User
+):
     """Função para atualizar a conta do usuário
     chamada pela rota PUT /me/."""
     user = session.scalar(
-        select(User).where((User.id == '2') & (User.deleted_at == None))
+        select(User).where(
+            (User.id == current_user.id) & (User.deleted_at == None)
+        )
     )
 
     if not user:
@@ -71,12 +77,14 @@ def controller_update_me(body: UpdateMeSchema, session: Session):
 
 
 def controller_update_me_password(
-    body: UpdateMePasswordSchema, session: Session
+    body: UpdateMePasswordSchema, session: Session, current_user: User
 ):
     """Função para atualizar a senha do usuário
     chamada pela rota PATCH /me/password/."""
     user = session.scalar(
-        select(User).where((User.id == '2') & (User.deleted_at == None))
+        select(User).where(
+            (User.id == current_user.id) & (User.deleted_at == None)
+        )
     )
 
     if not user:
@@ -93,11 +101,13 @@ def controller_update_me_password(
     return {'message': 'Password changed.'}
 
 
-def controller_delete_me(session: Session):
+def controller_delete_me(session: Session, current_user: User):
     """Função para deletar o perfil do usuário
     chamada pela rota DELETE /me/."""
     user = session.scalar(
-        select(User).where((User.id == '2') & (User.deleted_at == None))
+        select(User).where(
+            (User.id == current_user.id) & (User.deleted_at == None)
+        )
     )
 
     if not user:
@@ -106,6 +116,7 @@ def controller_delete_me(session: Session):
             detail='Account not found.',
         )
 
+    user.deleted_by = current_user.id
     user.deleted_at = func.now()
 
     session.commit()

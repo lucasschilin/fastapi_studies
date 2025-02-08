@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -10,27 +11,34 @@ from fastapi_studies.controllers.me_controller import (
     controller_update_me_password,
 )
 from fastapi_studies.database import get_session
+from fastapi_studies.models.user import User
 from fastapi_studies.schemas.me import (
     GetMeSchema,
     UpdateMePasswordSchema,
     UpdateMeSchema,
 )
 from fastapi_studies.schemas.message import MessageSchema
+from fastapi_studies.security import get_current_user
 
 router = APIRouter(
     prefix='/me',
     tags=['me'],
 )
 
+T_Session = Annotated[Session, Depends(get_session)]
+T_CurrentUser = Annotated[User, Depends(get_current_user)]
+
 
 @router.get('/', status_code=HTTPStatus.OK, response_model=GetMeSchema)
-def get_me(session: Session = Depends(get_session)):
-    return controller_get_me(session)
+def get_me(session: T_Session, current_user: T_CurrentUser):
+    return controller_get_me(session, current_user)
 
 
 @router.put('/', status_code=HTTPStatus.OK, response_model=GetMeSchema)
-def update_me(body: UpdateMeSchema, session: Session = Depends(get_session)):
-    return controller_update_me(body, session)
+def update_me(
+    body: UpdateMeSchema, session: T_Session, current_user: T_CurrentUser
+):
+    return controller_update_me(body, session, current_user)
 
 
 @router.patch(
@@ -40,11 +48,12 @@ def update_me(body: UpdateMeSchema, session: Session = Depends(get_session)):
 )
 def update_me_password(
     body: UpdateMePasswordSchema,
-    session: Session = Depends(get_session),
+    session: T_Session,
+    current_user: T_CurrentUser,
 ):
-    return controller_update_me_password(body, session)
+    return controller_update_me_password(body, session, current_user)
 
 
 @router.delete('/', status_code=HTTPStatus.OK, response_model=MessageSchema)
-def delete_me(session: Session = Depends(get_session)):
-    return controller_delete_me(session)
+def delete_me(session: T_Session, current_user: T_CurrentUser):
+    return controller_delete_me(session, current_user)

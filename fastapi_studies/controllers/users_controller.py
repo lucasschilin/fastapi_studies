@@ -12,7 +12,7 @@ from fastapi_studies.schemas.user import (
 from fastapi_studies.security import get_password_hash
 
 
-def controller_get_users(session: Session):
+def controller_get_users(session: Session, current_user: User):
     """Função para buscar todos os usuários
     chamada pela rota GET /users/."""
     users = session.scalars(select(User).where(User.deleted_at == None)).all()
@@ -20,7 +20,7 @@ def controller_get_users(session: Session):
     return {'users': users}
 
 
-def controller_get_user(id: int, session: Session):
+def controller_get_user(id: int, session: Session, current_user: User):
     """Função para buscar um usuário pelo id
     chamada pela rota GET /users/{id}/."""
     user = session.scalar(
@@ -71,10 +71,13 @@ def controller_create_user(body: CreateUserSchema, session: Session):
 
 
 def controller_update_user_password(
-    id: int, body: UpdateUserPasswordSchema, session: Session
+    id: int,
+    body: UpdateUserPasswordSchema,
+    session: Session,
+    current_user: User,
 ):
     """Função para atualizar a senha do usuário
-    chamada pela rota PATCH /me/password/."""
+    chamada pela rota PATCH /user/password/."""
     user = session.scalar(
         select(User).where((User.id == id) & (User.deleted_at == None))
     )
@@ -93,7 +96,7 @@ def controller_update_user_password(
     return {'message': 'Password changed.'}
 
 
-def controller_delete_user(id: int, session: Session):
+def controller_delete_user(id: int, session: Session, current_user: User):
     """Função para deletar o perfil do usuário
     chamada pela rota DELETE /me/."""
     user = session.scalar(
@@ -106,6 +109,7 @@ def controller_delete_user(id: int, session: Session):
             detail='User not found.',
         )
 
+    user.deleted_by = current_user.id
     user.deleted_at = func.now()
 
     session.commit()
