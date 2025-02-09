@@ -1286,6 +1286,18 @@ files = [
 ]
 
 [[package]]
+name = "tzdata"
+version = "2025.1"
+description = "Provider of IANA time zone data"
+optional = false
+python-versions = ">=2"
+groups = ["main"]
+files = [
+    {file = "tzdata-2025.1-py2.py3-none-any.whl", hash = "sha256:7e127113816800496f027041c570f50bcd464a020098a3b6b199517772303639"},
+    {file = "tzdata-2025.1.tar.gz", hash = "sha256:24894909e88cdb28bd1636c6887801df64cb485bd593f2fd83ef29075a81d694"},
+]
+
+[[package]]
 name = "uvicorn"
 version = "0.34.0"
 description = "The lightning-fast ASGI server."
@@ -1530,4 +1542,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13.1,<3.14.0"
-content-hash = "d405724733ab9e547c9e46b04a975083018fc34eb145bbcee98e4a697377a459"
+content-hash = "387bbde33909d8fb4efde3725b4ba125896dc6a2c8d3435531cfc2ad556ad284"

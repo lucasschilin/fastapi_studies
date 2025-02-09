@@ -45,8 +45,10 @@ def get_user(id: int, session: T_Session, current_user: T_CurrentUser):
 
 
 @router.post('/', status_code=HTTPStatus.CREATED, response_model=GetUserSchema)
-def create_user(body: CreateUserSchema, session: T_Session):
-    return controller_create_user(body, session)
+def create_user(
+    body: CreateUserSchema, session: T_Session, current_user: T_CurrentUser
+):
+    return controller_create_user(body, session, current_user)
 
 
 @router.patch(

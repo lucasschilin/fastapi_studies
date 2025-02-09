@@ -3,6 +3,12 @@ from datetime import datetime
 from pydantic import BaseModel, EmailStr
 
 
+class CreateMeSchema(BaseModel):
+    username: str
+    email: EmailStr
+    password: str
+
+
 class GetMeSchema(BaseModel):
     id: int
     username: str

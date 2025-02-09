@@ -36,7 +36,9 @@ def controller_get_user(id: int, session: Session, current_user: User):
     return user
 
 
-def controller_create_user(body: CreateUserSchema, session: Session):
+def controller_create_user(
+    body: CreateUserSchema, session: Session, current_user: User
+):
     """Função para criar um usuário chamada pela rota POST /users/."""
     user = session.scalar(
         select(User).where(
@@ -61,6 +63,7 @@ def controller_create_user(body: CreateUserSchema, session: Session):
         username=body.username,
         email=body.email,
         password=get_password_hash(body.password),
+        created_by=current_user.id,
     )
 
     session.add(user)

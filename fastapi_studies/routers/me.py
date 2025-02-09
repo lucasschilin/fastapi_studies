@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from fastapi_studies.controllers.me_controller import (
+    controller_create_me,
     controller_delete_me,
     controller_get_me,
     controller_update_me,
@@ -13,6 +14,7 @@ from fastapi_studies.controllers.me_controller import (
 from fastapi_studies.database import get_session
 from fastapi_studies.models.user import User
 from fastapi_studies.schemas.me import (
+    CreateMeSchema,
     GetMeSchema,
     UpdateMePasswordSchema,
     UpdateMeSchema,
@@ -32,6 +34,11 @@ T_CurrentUser = Annotated[User, Depends(get_current_user)]
 @router.get('/', status_code=HTTPStatus.OK, response_model=GetMeSchema)
 def get_me(session: T_Session, current_user: T_CurrentUser):
     return controller_get_me(session, current_user)
+
+
+@router.post('/', status_code=HTTPStatus.CREATED, response_model=GetMeSchema)
+def create_me(body: CreateMeSchema, session: T_Session):
+    return controller_create_me(body, session)
 
 
 @router.put('/', status_code=HTTPStatus.OK, response_model=GetMeSchema)

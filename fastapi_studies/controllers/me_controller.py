@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from fastapi_studies.models.user import User
 from fastapi_studies.schemas.me import (
+    CreateMeSchema,
     UpdateMePasswordSchema,
     UpdateMeSchema,
 )
@@ -28,6 +29,40 @@ def controller_get_me(session: Session, current_user: User):
         )
 
     return user
+
+
+def controller_create_me(body: CreateMeSchema, session: Session):
+    """Função para criar um usuário chamada pela rota POST /users/."""
+    user = session.scalar(
+        select(User).where(
+            ((User.username == body.username) | (User.email == body.email))
+            & (User.deleted_at == None)
+        )
+    )
+
+    if user:
+        if body.username == user.username:
+            raise HTTPException(
+                status_code=HTTPStatus.CONFLICT,
+                detail='Username not available.',
+            )
+        elif body.email == user.email:
+            raise HTTPException(
+                status_code=HTTPStatus.CONFLICT,
+                detail='E-mail address not available.',
+            )
+
+    me = User(
+        username=body.username,
+        email=body.email,
+        password=get_password_hash(body.password),
+    )
+
+    session.add(me)
+    session.commit()
+    session.refresh(me)
+
+    return me
 
 
 def controller_update_me(
