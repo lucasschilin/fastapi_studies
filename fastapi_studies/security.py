@@ -56,7 +56,7 @@ def get_current_user(
     try:
         payload = decode(
             token,
-            secret_key=Settings().JWT_SECRET_KEY,
+            key=Settings().JWT_SECRET_KEY,
             algorithms=[Settings().JWT_ALGORITHM],
         )
 
