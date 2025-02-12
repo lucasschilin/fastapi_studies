@@ -24,7 +24,7 @@ from fastapi_studies.security import get_current_user
 
 router = APIRouter(
     prefix='/me',
-    tags=['me'],
+    tags=['Me'],
 )
 
 T_Session = Annotated[Session, Depends(get_session)]
@@ -49,9 +49,7 @@ def update_me(
 
 
 @router.patch(
-    '/password/',
-    status_code=HTTPStatus.OK,
-    response_model=MessageSchema,
+    '/password/', status_code=HTTPStatus.OK, response_model=MessageSchema
 )
 def update_me_password(
     body: UpdateMePasswordSchema,

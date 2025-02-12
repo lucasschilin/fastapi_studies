@@ -25,7 +25,7 @@ def controller_get_me(session: Session, current_user: User):
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Account not found.',
+            detail='Account not found',
         )
 
     return user
@@ -44,12 +44,12 @@ def controller_create_me(body: CreateMeSchema, session: Session):
         if body.username == user.username:
             raise HTTPException(
                 status_code=HTTPStatus.CONFLICT,
-                detail='Username not available.',
+                detail='Username not available',
             )
         elif body.email == user.email:
             raise HTTPException(
                 status_code=HTTPStatus.CONFLICT,
-                detail='E-mail address not available.',
+                detail='E-mail address not available',
             )
 
     me = User(
@@ -79,7 +79,7 @@ def controller_update_me(
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Account not found.',
+            detail='Account not found',
         )
 
     other_user = session.scalar(
@@ -94,12 +94,12 @@ def controller_update_me(
         if other_user.username == body.username:
             raise HTTPException(
                 status_code=HTTPStatus.CONFLICT,
-                detail='Username not available.',
+                detail='Username not available',
             )
         elif other_user.email == body.email:
             raise HTTPException(
                 status_code=HTTPStatus.CONFLICT,
-                detail='E-mail address not available.',
+                detail='E-mail address not available',
             )
 
     user.username = body.username
@@ -125,7 +125,7 @@ def controller_update_me_password(
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Account not found.',
+            detail='Account not found',
         )
 
     user.password = get_password_hash(body.password)
@@ -133,7 +133,7 @@ def controller_update_me_password(
     session.commit()
     session.refresh(user)
 
-    return {'message': 'Password changed.'}
+    return {'message': 'Password changed'}
 
 
 def controller_delete_me(session: Session, current_user: User):
@@ -148,7 +148,7 @@ def controller_delete_me(session: Session, current_user: User):
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Account not found.',
+            detail='Account not found',
         )
 
     user.deleted_by = current_user.id
@@ -156,4 +156,4 @@ def controller_delete_me(session: Session, current_user: User):
 
     session.commit()
 
-    return {'message': 'Account deleted.'}
+    return {'message': 'Account deleted'}

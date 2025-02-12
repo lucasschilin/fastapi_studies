@@ -30,7 +30,7 @@ def controller_get_user(id: int, session: Session, current_user: User):
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='User not found.',
+            detail='User not found',
         )
 
     return user
@@ -51,12 +51,12 @@ def controller_create_user(
         if body.username == user.username:
             raise HTTPException(
                 status_code=HTTPStatus.CONFLICT,
-                detail='Username not available.',
+                detail='Username not available',
             )
         elif body.email == user.email:
             raise HTTPException(
                 status_code=HTTPStatus.CONFLICT,
-                detail='E-mail address not available.',
+                detail='E-mail address not available',
             )
 
     user = User(
@@ -88,7 +88,7 @@ def controller_update_user_password(
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='User not found.',
+            detail='User not found',
         )
 
     user.password = get_password_hash(body.password)
@@ -96,7 +96,7 @@ def controller_update_user_password(
     session.commit()
     session.refresh(user)
 
-    return {'message': 'Password changed.'}
+    return {'message': 'Password changed'}
 
 
 def controller_delete_user(id: int, session: Session, current_user: User):
@@ -109,7 +109,7 @@ def controller_delete_user(id: int, session: Session, current_user: User):
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='User not found.',
+            detail='User not found',
         )
 
     user.deleted_by = current_user.id
@@ -117,4 +117,4 @@ def controller_delete_user(id: int, session: Session, current_user: User):
 
     session.commit()
 
-    return {'message': 'User deleted.'}
+    return {'message': 'User deleted'}

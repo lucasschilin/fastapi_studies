@@ -21,9 +21,15 @@ def controller_create_auth_token(
     if not user or not verify_password(form_data.password, user.password):
         raise HTTPException(
             status_code=HTTPStatus.UNAUTHORIZED,
-            detail='Incorrect username or password.',
+            detail='Incorrect username or password',
         )
 
     access_token = create_access_token(data={'sub': user.username})
 
     return {'access_token': access_token, 'token_type': 'Bearer'}
+
+
+def controller_refresh_token(current_user: User):
+    new_access_token = create_access_token(data={'sub': current_user.username})
+
+    return {'access_token': new_access_token, 'token_type': 'bearer'}

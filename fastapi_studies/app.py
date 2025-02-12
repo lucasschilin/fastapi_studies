@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi_studies.routers import auth, me, users
 from fastapi_studies.schemas.message import MessageSchema
 
-app = FastAPI()
+app = FastAPI(version='0.0.1')
 
 app.add_middleware(
     CORSMiddleware,
